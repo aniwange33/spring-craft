@@ -1,3 +1,8 @@
 spring:
   application:
     name: Spring-craft
+  threads:
+    virtual:
+      enabled: true
+
+product-url: https://api.restful-api.dev
