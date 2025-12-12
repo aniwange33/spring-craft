@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/v1/products")
+@RequestMapping(value = "api/v{version}/products")
 public class ProductController {
     private final ProductService productService;
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -21,16 +21,30 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("")
+    @GetMapping(version = "1")
     ResponseEntity<List<Product>> getAllProduct() {
         List<Product> products = productService.getAllProducts();
-        logger.info("Products fetched");
+        logger.info("Products fetched 1");
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(version = "2")
+    ResponseEntity<List<Product>> getAllProduct2() {
+        List<Product> products = productService.getAllProducts();
+        logger.info("Products fetched 2");
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping(value = "/{id}", version = "1")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        logger.info("Fetching Product with id: " + id);
+        logger.info("Fetching v1 Product with id: " + id);
+        Product product = productService.getProduct(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @GetMapping(value = "/{id}", version = "2")
+    public ResponseEntity<Product> getProductById2(@PathVariable Long id) {
+        logger.info("Fetching v2 Product with id: " + id);
         Product product = productService.getProduct(id);
         return ResponseEntity.ok(product);
     }

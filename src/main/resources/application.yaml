@@ -4,5 +4,10 @@ spring:
   threads:
     virtual:
       enabled: true
-
+  mvc:
+    apiversion:
+      default: 1
+      use:
+        path-segment: 1
+      supported: 1,2
 product-url: https://api.restful-api.dev
