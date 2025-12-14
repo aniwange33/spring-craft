@@ -21,6 +21,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+
     @GetMapping(version = "1.0")
     ResponseEntity<List<Product>> getAllProduct() {
         logger.info("Products fetched 1");
