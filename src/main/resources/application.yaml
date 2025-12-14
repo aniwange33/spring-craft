@@ -9,5 +9,6 @@ spring:
       default: 1
       use:
         path-segment: 1
-      supported: 1,2
+      supported: 1.0,2.0
 product-url: https://api.restful-api.dev
+

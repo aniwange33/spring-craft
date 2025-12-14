@@ -5,6 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Scanner;
+
+import static java.lang.IO.println;
+
 @SpringBootApplication
 public class SpringCraftApplication {
 
@@ -12,7 +16,7 @@ public class SpringCraftApplication {
 
     static void main(String[] args) {
         SpringApplication.run(SpringCraftApplication.class, args);
-        log.info("started");
+        log.info("Hello {}", IO.readln("Enter your name: "));
     }
 
 }

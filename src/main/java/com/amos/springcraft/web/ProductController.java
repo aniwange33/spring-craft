@@ -21,31 +21,27 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping(version = "1")
+    @GetMapping(version = "1.0")
     ResponseEntity<List<Product>> getAllProduct() {
-        List<Product> products = productService.getAllProducts();
         logger.info("Products fetched 1");
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @GetMapping(version = "2")
+    @GetMapping(version = "2.0")
     ResponseEntity<List<Product>> getAllProduct2() {
-        List<Product> products = productService.getAllProducts();
         logger.info("Products fetched 2");
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @GetMapping(value = "/{id}", version = "1")
+    @GetMapping(value = "/{id}", version = "1.0")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         logger.info("Fetching v1 Product with id: " + id);
-        Product product = productService.getProduct(id);
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getProduct(id));
     }
 
-    @GetMapping(value = "/{id}", version = "2")
+    @GetMapping(value = "/{id}", version = "2.0")
     public ResponseEntity<Product> getProductById2(@PathVariable Long id) {
         logger.info("Fetching v2 Product with id: " + id);
-        Product product = productService.getProduct(id);
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getProduct(id));
     }
 }
