@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-craft
+  namespace: spring-craft-dev
+  labels:
+    app: spring-craft
+    version: v1
+    tier: backend
+  annotations:
+    description: "Spring-craft application deployment"
+    created-by: "kubectl"
+spec:
+  # Number of replicas (pod instances)
+  replicas: 3
+
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+  # Pod selector
+  selector:
+    matchLabels:
+      app: spring-craft
+      tier: backend
+
+  # Pod template
+  template:
+    metadata:
+      name: spring-craft-pod
+      labels:
+        app: spring-craft
+        version: v1
+        tier: backend
+      annotations:
+        description: "Spring-craft application pod"
+        created-by: "kubectl"
+    spec:
+      containers:
+      - name: spring-craft-container
+        image: spring-craft:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: "Spring-craft"
+        - name: SERVER_PORT
+          value: "8080"
+        - name: JAVA_OPTS
+          value: "-Xms256m -Xmx512m"
+
+        # Liveness probe - restarts container if unhealthy
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        # Readiness probe - marks pod as ready for traffic
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        # Resource requests and limits
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+          capabilities:
+            drop:
+              - ALL
+
+        # Volume mounts
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: cache
+          mountPath: /app/cache
+
+      # Pod-level security context
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+
+      # Restart policy
+      restartPolicy: Always
+
+      # Termination grace period
+      terminationGracePeriodSeconds: 30
+
+      # Volumes
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: cache
+        emptyDir: {}
+
+      # Pod affinity rules (optional - uncomment for advanced scheduling)
+      # affinity:
+      #   podAntiAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       podAffinityTerm:
+      #         labelSelector:
+      #           matchExpressions:
+      #           - key: app
+      #             operator: In
+      #             values:
+      #             - spring-craft
+      #         topologyKey: kubernetes.io/hostname
+

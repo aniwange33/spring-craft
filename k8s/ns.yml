@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: spring-craft-dev
+  labels:
+    name: spring-craft-dev
+    environment: dev
+  annotations:
+    description: "Namespace for Spring-craft application deployment in dev environment"
+    managed-by: "kubectl"
+spec:
+  finalizers:
+    - kubernetes
+

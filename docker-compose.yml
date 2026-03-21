@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  spring-craft:
+    image: spring-craft:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE:-$(date -u +'%Y-%m-%dT%H:%M:%SZ')}
+        VCS_REF: ${VCS_REF:-unknown}
+        VERSION: ${VERSION:-0.0.1-SNAPSHOT}
+    container_name: spring-craft-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=Spring-craft
+      - SERVER_PORT=8080
+      - JAVA_OPTS=-Xms256m -Xmx512m
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - spring-craft-network
+
+networks:
+  spring-craft-network:
+    driver: bridge
+
